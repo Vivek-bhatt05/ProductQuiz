@@ -1,12 +1,14 @@
 import './App.css';
-import Another from './components/Another';
+import Usecases from './components/Usecases';
+// import Another from './components/Another';
 // import Quiz from './components/quiz';
 
 function App() {
   return (
     <div className="App">
       {/* <Quiz /> */}
-      <Another />
+      {/* <Another /> */}
+      <Usecases />
     </div>
   );
 }

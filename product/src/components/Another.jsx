@@ -1,3 +1,4 @@
+import axios from 'axios';
 import React, { useState, useEffect } from 'react';
 import quizQuestions from '../utils/questions';
 
@@ -95,6 +96,20 @@ const Another = () => {
     }
   };
 
+  useEffect(() => {
+    // Make a GET request to retrieve "use cases"
+    axios.get('http://localhost:8000/api/userresponses')
+      .then(response => {
+        // Handle the response
+        console.log('User responses:', response.data);
+        // Now you can use the retrieved data in your component's state or display it as needed
+      })
+      .catch(error => {
+        // Handle errors
+        console.error('Error retrieving:', error);
+      });
+  }, []);
+
   const renderQuestion = () => {
     const currentQuestion = quizQuestions[currentQuestionIndex];
 
@@ -107,6 +122,7 @@ const Another = () => {
                 value={selectedOption || ''}
                 onChange={(e) => handleOptionSelect(e.target.value)}
                 placeholder="Type your answer here"
+                required
               />
             );
           case 'textarea':
@@ -115,6 +131,7 @@ const Another = () => {
                 value={selectedOption || ''}
                 onChange={(e) => handleOptionSelect(e.target.value)}
                 placeholder="Type your answer here"
+                required
               />
             );
           case 'multiple-choice':
@@ -128,6 +145,7 @@ const Another = () => {
                       value={option}
                       checked={selectedOption === option}
                       onChange={() => handleOptionSelect(option)}
+                      required
                     />
                     {option}
                   </label>
