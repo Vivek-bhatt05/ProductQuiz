@@ -101,7 +101,7 @@ const Another = () => {
     axios.get('http://localhost:8000/api/userresponses')
       .then(response => {
         // Handle the response
-        console.log('User responses:', response.data);
+        console.log('User responses :', response.data);
         // Now you can use the retrieved data in your component's state or display it as needed
       })
       .catch(error => {
