@@ -8,6 +8,7 @@ const Onemore = () => {
   const [responses, setResponses] = useState([]);
   const [submitted, setSubmitted] = useState(false);
   const [responseSent, setResponseSent] = useState({});
+  const token = localStorage.getItem('token'); 
 
   useEffect(() => {
     const currentQuestion = quizQuestions[currentQuestionIndex];
@@ -26,18 +27,50 @@ const Onemore = () => {
     setSelectedOption(optionText);
   };
 
+  // const sendResponseToBackend = (method, question, selectedOptionText) => {
+  //   // Define the endpoint URL based on the method
+  //   const encodedQuestion = encodeURIComponent(question);
+  //   const endpoint =
+  //     method === 'PATCH'
+  //       ? `http://localhost:8000/api/userresponses/${encodedQuestion}`
+  //       : 'http://localhost:8000/api/userresponses';
+  
+  //   // Send the response to the backend
+  //   fetch(endpoint, {
+  //     method: method,
+  //     headers: {
+  //       'Content-Type': 'application/json',
+  //     },
+  //     body: JSON.stringify({
+  //       question,
+  //       selectedOption: selectedOptionText,
+  //     }),
+  //   })
+  //     .then((response) => response.json())
+  //     .then((data) => {
+  //       console.log(data.message);
+  //       // Update the responseSent state to indicate that a response has been sent for this question
+  //       setResponseSent((prevState) => ({
+  //         ...prevState,
+  //         [question]: true,
+  //       }));
+  //     })
+  //     .catch((error) => {
+  //       console.error('Error:', error);
+  //     });
+  // };
+
   const sendResponseToBackend = (method, question, selectedOptionText) => {
-    // Define the endpoint URL based on the method
     const encodedQuestion = encodeURIComponent(question);
     const endpoint =
       method === 'PATCH'
         ? `http://localhost:8000/api/userresponses/${encodedQuestion}`
         : 'http://localhost:8000/api/userresponses';
   
-    // Send the response to the backend
     fetch(endpoint, {
       method: method,
       headers: {
+        'Authorization': `${token}`, 
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
@@ -48,7 +81,6 @@ const Onemore = () => {
       .then((response) => response.json())
       .then((data) => {
         console.log(data.message);
-        // Update the responseSent state to indicate that a response has been sent for this question
         setResponseSent((prevState) => ({
           ...prevState,
           [question]: true,
@@ -58,7 +90,7 @@ const Onemore = () => {
         console.error('Error:', error);
       });
   };
-
+  
   const handleNextQuestion = () => {
     console.log("button pressed");
     if (currentQuestionIndex < quizQuestions.length - 1) {
@@ -108,21 +140,38 @@ const Onemore = () => {
     }
   };
 
+  // useEffect(() => {
+  //   // Make a GET request to retrieve "use cases"
+  //   axios
+  //     .get('http://localhost:8000/api/userresponses')
+  //     .then((response) => {
+  //       // Handle the response
+  //       console.log('User responses:', response.data);
+  //       // Now you can use the retrieved data in your component's state or display it as needed
+  //     })
+  //     .catch((error) => {
+  //       // Handle errors
+  //       console.error('Error retrieving:', error);
+  //     });
+  // }, []);
+
   useEffect(() => {
-    // Make a GET request to retrieve "use cases"
     axios
-      .get('http://localhost:8000/api/userresponses')
+      .get('http://localhost:8000/api/userresponses', {
+        headers: {
+          'Authorization': `${token}`,
+        },
+      })
       .then((response) => {
-        // Handle the response
+        // Handle the response and store it in your component's state or use it as needed
         console.log('User responses:', response.data);
-        // Now you can use the retrieved data in your component's state or display it as needed
       })
       .catch((error) => {
         // Handle errors
-        console.error('Error retrieving:', error);
+        console.error('Error retrieving user responses:', error);
       });
-  }, []);
-
+  }, [token]);
+  
   const renderInput = () => {
     const currentQuestion = quizQuestions[currentQuestionIndex];
 
